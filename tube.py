@@ -82,17 +82,6 @@ class Tube:
             self.colors[liquid.getColor()] -= 1
             return liquid
 
-    def print(self):
-        tmp = Stack()
-        while not self.liquids.isEmpty():
-            liquid = self.removeLiquid()
-            print(liquid.getColor(), end=" -> ")
-            tmp.push(liquid)
-
-        self.liquids = tmp.reverse()
-
-        print()
-
     def copy(self):
         tmp = Stack()
         while not self.liquids.isEmpty():
@@ -118,6 +107,17 @@ class Tube:
         result = len(still_has) - 1
         return result if result > 0 else 0
 
+    def __str__(self) -> str:
+        tmp = Stack()
+        result = ""
+        while not self.liquids.isEmpty():
+            liquid = self.liquids.pop()
+            result += liquid.getColor() + " -> "
+            tmp.push(liquid)
+
+        self.liquids = tmp.reverse()
+        return result
+
 
 if __name__ == "__main__":
     test_tube = Tube("Test", 0, 0, 20, 60, 10, 5)
@@ -137,13 +137,13 @@ if __name__ == "__main__":
     win.getMouse()
 
     new_tube = test_tube.copy()
-    test_tube.print()
+    print(test_tube)
 
     test_tube.undraw()
     win.getMouse()
     new_tube.removeLiquid()
     new_tube.draw(win)
-    new_tube.print()
+    print(new_tube)
     print(new_tube.getNumUnsorted())
 
     win.getMouse()

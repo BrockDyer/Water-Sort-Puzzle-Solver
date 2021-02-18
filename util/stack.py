@@ -47,3 +47,12 @@ class Stack:
         if self.isEmpty():
             raise IndexError("Tried to get top of empty stack")
         return self._top
+
+    def __str__(self) -> str:
+        tmp = self._top
+        result = ""
+        while tmp is not None:
+            result += str(tmp.getValue()) + " -> "
+            tmp = tmp.getNext()
+
+        return result

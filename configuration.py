@@ -8,8 +8,6 @@ class Configuration:
         self.tubes = tubes
         self.source = None
         self.dest = None
-        self.parent = None
-        self.depth = 0
         self.heuristic = self.calculateHeuristic()
 
     def _copy(self):
@@ -78,9 +76,6 @@ class Configuration:
                     new_config = self._copy()
                     new_config.source = tube
                     new_config.dest = t
-                    new_config.parent = self
-                    new_config.depth = self.depth + 1
-                    new_config.heuristic = self.calculateHeuristic()
                     tube_idx = int(tube.getName()) - 1
                     t_idx = int(t.getName()) - 1
                     new_config._pour(
@@ -100,17 +95,8 @@ class Configuration:
     def getDest(self):
         return self.dest
 
-    def getParent(self):
-        return self.parent
-
-    def hScore(self):
+    def getHeuristic(self):
         return self.heuristic
-
-    def gScore(self):
-        return self.depth
-
-    def fScore(self):
-        return self.depth + self.heuristic
 
     def isGoal(self):
         solved_count = 0
@@ -122,49 +108,102 @@ class Configuration:
 
         return solved_count == num_tubes
 
-    def __lt__(self, other):
-        return self.fScore() < other.fScore()
+    def __lt__(self, other: "Configuration"):
+        return self.heuristic < other.heuristic
+
+    def __eq__(self, other):
+        my_tubes = {}
+        for tube in self.tubes:
+            tube_str = str(tube)
+            if tube_str not in my_tubes:
+                my_tubes[tube_str] = 0
+            my_tubes[tube_str] += 1
+
+        for tube in other.tubes:
+            tube_str = str(tube)
+            if tube_str not in my_tubes:
+                return False
+            my_tubes[tube_str] -= 1
+            if my_tubes[tube_str] == 0:
+                del my_tubes[tube_str]
+
+        return True
+
+    def __hash__(self):
+
+        my_tubes = {}
+        for tube in self.tubes:
+            tube_str = str(tube)
+            if tube_str not in my_tubes:
+                my_tubes[tube_str] = 0
+            my_tubes[tube_str] += 1
+
+        return hash(str(my_tubes))
+
+    def __str__(self) -> str:
+        tubes = []
+        for tube in self.tubes:
+            tubes.append(str(tube))
+
+        result = "Source: {}\nDestination: {}\n".format(
+            self.source.getName() if self.source is not None else None,
+            self.dest.getName() if self.dest is not None else None)
+        prefix = ""
+        for tube in tubes:
+            result += prefix + tube
+            prefix = '\n'
+        return result
 
 
 if __name__ == "__main__":
     from water_sort import init, create_puzzle, show
 
-    win = init(500, 400, "Test")
+    # win = init(500, 400, "Test")
+    # tubes = create_puzzle()
+    # config = Configuration(tubes)
+    # print(config.heuristic())
+    # config.draw(win)
+    # show(win)
+    # children = config.getChildren()
+    # print(children[0].heuristic())
+    # child = children[0]
+    # child.getSource().undraw()
+    # child.getDest().undraw()
+    # child.draw(win)
+    # show(win)
+
+    # win.close()
+
+    # win = init(500, 400, "Test")
+
+    # tubes = []
+    # config = Configuration(tubes)
+    # print(config.isGoal())
+
+    # tube = Tube("1", 0, 0, 20, 60, 10, 5)
+    # tubes = [tube]
+    # tube.addLiquid("red")
+
+    # config = Configuration(tubes)
+    # print(config.isGoal())
+
+    # config.draw(win)
+    # win.getMouse()
+
+    # while not tube.isFull():
+    #     tube.addLiquid("red")
+
+    # tube.undraw()
+    # print(config.isGoal())
+    # config.draw(win)
+    # win.getMouse()
+
     tubes = create_puzzle()
     config = Configuration(tubes)
-    print(config.heuristic())
-    config.draw(win)
-    show(win)
-    children = config.getChildren()
-    print(children[0].heuristic())
-    child = children[0]
-    child.getSource().undraw()
-    child.getDest().undraw()
-    child.draw(win)
-    show(win)
+    config2 = Configuration(tubes)
 
-    win.close()
+    print("{} == {} : {}".format(config, config2, config == config2))
 
-    win = init(500, 400, "Test")
+    config3 = config.getChildren()[0]
 
-    tubes = []
-    config = Configuration(tubes)
-    print(config.isGoal())
-
-    tube = Tube("1", 0, 0, 20, 60, 10, 5)
-    tubes = [tube]
-    tube.addLiquid("red")
-
-    config = Configuration(tubes)
-    print(config.isGoal())
-
-    config.draw(win)
-    win.getMouse()
-
-    while not tube.isFull():
-        tube.addLiquid("red")
-
-    tube.undraw()
-    print(config.isGoal())
-    config.draw(win)
-    win.getMouse()
+    print("{} == {} : {}".format(config, config3, config == config3))
