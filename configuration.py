@@ -8,6 +8,9 @@ class Configuration:
         self.tubes = tubes
         self.source = None
         self.dest = None
+        self.parent = None
+        self.depth = 0
+        self.heuristic = self.calculateHeuristic()
 
     def _copy(self):
         new_tubes = []
@@ -57,6 +60,13 @@ class Configuration:
         for tube in self.tubes:
             tube.draw(win)
 
+    def calculateHeuristic(self):
+        min_moves_left = 0
+        for tube in self.tubes:
+            min_moves_left += tube.getNumUnsorted()
+
+        return min_moves_left
+
     def getChildren(self, debug=False):
         children = []
         for i in range(len(self.tubes)):
@@ -68,6 +78,9 @@ class Configuration:
                     new_config = self._copy()
                     new_config.source = tube
                     new_config.dest = t
+                    new_config.parent = self
+                    new_config.depth = self.depth + 1
+                    new_config.heuristic = self.calculateHeuristic()
                     tube_idx = int(tube.getName()) - 1
                     t_idx = int(t.getName()) - 1
                     new_config._pour(
@@ -87,11 +100,17 @@ class Configuration:
     def getDest(self):
         return self.dest
 
-    def heuristic(self):
-        min_moves_left = 0
-        for tube in self.tubes:
-            min_moves_left += tube.getNumUnsorted()
-        return min_moves_left
+    def getParent(self):
+        return self.parent
+
+    def hScore(self):
+        return self.heuristic
+
+    def gScore(self):
+        return self.depth
+
+    def fScore(self):
+        return self.depth + self.heuristic
 
     def isGoal(self):
         solved_count = 0
@@ -102,6 +121,9 @@ class Configuration:
             num_tubes += 1
 
         return solved_count == num_tubes
+
+    def __lt__(self, other):
+        return self.fScore() < other.fScore()
 
 
 if __name__ == "__main__":
