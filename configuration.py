@@ -63,11 +63,12 @@ class Configuration:
             tube.undraw()
 
     def calculateHeuristic(self):
-        min_moves_left = 0
+        calculated_heuristic = 0
         for tube in self.tubes:
-            min_moves_left += tube.getNumUnsorted()
+            tube_heuristic = tube.getNumLiquids() - tube.getNumContiguous()
+            calculated_heuristic += tube_heuristic
 
-        return min_moves_left
+        return calculated_heuristic
 
     def getChildren(self, debug=False):
         children = []
@@ -162,7 +163,7 @@ class Configuration:
 if __name__ == "__main__":
     from water_sort import init, create_puzzle, show
 
-    # win = init(500, 400, "Test")
+    win = init(500, 400, "Test")
     # tubes = create_puzzle()
     # config = Configuration(tubes)
     # print(config.heuristic())
@@ -204,10 +205,16 @@ if __name__ == "__main__":
 
     tubes = create_puzzle()
     config = Configuration(tubes)
-    config2 = Configuration(tubes)
+    # config2 = Configuration(tubes)
 
-    print("{} == {} : {}".format(config, config2, config == config2))
+    # print("{} == {} : {}".format(config, config2, config == config2))
 
-    config3 = config.getChildren()[0]
+    # config3 = config.getChildren()[0]
 
-    print("{} == {} : {}".format(config, config3, config == config3))
+    # print("{} == {} : {}".format(config, config3, config == config3))
+
+    print(config.getHeuristic())
+
+    config.draw(win)
+
+    show(win)

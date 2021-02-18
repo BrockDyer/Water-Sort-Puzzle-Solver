@@ -7,6 +7,7 @@ class PriorityQueue:
         self.front = None
         self.back = None
         self.size = 0
+        self.contained = set()
 
     def isEmpty(self):
         return self.front is None
@@ -15,6 +16,9 @@ class PriorityQueue:
         return self.size
 
     def enqueue(self, value):
+        if value in self.contained:
+            return
+
         node = Node(value)
         if self.isEmpty():
             self.front = node
@@ -33,6 +37,7 @@ class PriorityQueue:
                 tmp.setNext(node)
                 node.setNext(after)
 
+        self.contained.add(value)
         self.size += 1
 
     def dequeue(self):
@@ -43,6 +48,7 @@ class PriorityQueue:
         if self.isEmpty():
             self.back = None
 
+        self.contained.remove(front)
         return front
 
     def print(self):

@@ -107,6 +107,22 @@ class Tube:
         result = len(still_has) - 1
         return result if result > 0 else 0
 
+    def getNumContiguous(self):
+        tmp = Stack()
+        previous_color = None
+        contiguous = 0
+        while not self.liquids.isEmpty():
+            liquid = self.liquids.pop()
+            color = liquid.getColor()
+            if color == previous_color or previous_color is None:
+                contiguous += 1
+            previous_color = color
+            tmp.push(liquid)
+
+        self.liquids = tmp.reverse()
+
+        return contiguous
+
     def __str__(self) -> str:
         tmp = Stack()
         result = ""
@@ -133,6 +149,7 @@ if __name__ == "__main__":
     test_tube.draw(win)
 
     print(test_tube.getNumUnsorted())
+    print("Contiguous: {}".format(test_tube.getNumContiguous()))
 
     win.getMouse()
 
