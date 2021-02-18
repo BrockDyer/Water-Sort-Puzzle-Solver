@@ -58,6 +58,10 @@ class Configuration:
         for tube in self.tubes:
             tube.draw(win)
 
+    def undraw(self):
+        for tube in self.tubes:
+            tube.undraw()
+
     def calculateHeuristic(self):
         min_moves_left = 0
         for tube in self.tubes:

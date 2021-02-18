@@ -2,6 +2,7 @@ from configuration import Configuration
 from graphics import *
 from tube import Tube
 from configuration import Configuration
+from a_star import a_star
 from random import randint, shuffle
 
 
@@ -81,13 +82,44 @@ def create_puzzle():
     return tubes
 
 
+def display_text(text, win: GraphWin, display=None):
+    loc = Point(0, 0 - TUBE_HEIGHT - (TUBE_WIDTH * 2))
+    if display:
+        display.undraw()
+    display = Text(loc, text)
+    display.draw(win)
+    return display
+
+
 def main():
     tubes = create_puzzle()
     win = init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)
     start_config = Configuration(tubes)
     start_config.draw(win)
 
+    display = display_text("Click to solve", win)
+
     show(win)
+
+    start_config.undraw()
+    display = display_text("Solving...", win, display)
+    sol = a_star(start_config)
+
+    tmp = sol.pop()
+    while tmp is not None:
+
+        tmp.draw(win)
+        next_config = sol.pop() if not sol.isEmpty() else None
+        display = display_text(
+            "#{} -> #{}; Click to continue".format(
+                next_config.getSource().getName(), next_config.getDest().getName()
+            ) if next_config else "Solved",
+            win, display)
+
+        show(win)
+
+        tmp.undraw()
+        tmp = next_config
 
 
 if __name__ == "__main__":
