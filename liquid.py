@@ -25,3 +25,6 @@ class Liquid:
 
     def isColorMatch(self, other_liquid):
         return self.color == other_liquid.getColor()
+
+    def copy(self):
+        return Liquid(self.sx, self.sy, self.width, self.height, self.color)

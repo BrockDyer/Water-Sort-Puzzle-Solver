@@ -1,5 +1,7 @@
+from configuration import Configuration
 from graphics import *
 from tube import Tube
+from configuration import Configuration
 from random import randint, shuffle
 
 
@@ -82,8 +84,8 @@ def create_puzzle():
 def main():
     tubes = create_puzzle()
     win = init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)
-    for tube in tubes:
-        tube.draw(win)
+    start_config = Configuration(tubes)
+    start_config.draw(win)
 
     show(win)
 

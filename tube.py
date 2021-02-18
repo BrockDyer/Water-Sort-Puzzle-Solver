@@ -83,6 +83,22 @@ class Tube:
             tmp.push(liquid)
 
         self.liquids = tmp.reverse()
+        print()
+
+    def copy(self):
+        tmp = Stack()
+        result = Stack()
+        while not self.liquids.isEmpty():
+            liquid: Liquid = self.removeLiquid()
+            new_liquid = liquid.copy()
+            result.push(new_liquid)
+            tmp.push(liquid)
+
+        self.liquids = tmp.reverse()
+        new_tube = Tube(self.name, self.sx, self.sy, self.width,
+                        self.height, self.height_per_volume, self.capacity)
+        new_tube.liquids = result.reverse()
+        return new_tube
 
 
 if __name__ == "__main__":
