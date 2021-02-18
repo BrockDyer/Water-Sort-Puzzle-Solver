@@ -14,6 +14,7 @@ class Tube:
         self.height_per_volume = height_per_volume
         self.capacity = liquid_capacity
         self.liquids = Stack()
+        self.colors = {}
 
     def draw(self, win: GraphWin):
 
@@ -70,9 +71,15 @@ class Tube:
         liquid = Liquid(sx, sy, self.width, self.height_per_volume, color)
         self.liquids.push(liquid)
 
+        if color not in self.colors:
+            self.colors[color] = 0
+
+        self.colors[color] += 1
+
     def removeLiquid(self):
         if not self.liquids.isEmpty():
             liquid = self.liquids.pop()
+            self.colors[liquid.getColor()] -= 1
             return liquid
 
     def print(self):
@@ -83,22 +90,33 @@ class Tube:
             tmp.push(liquid)
 
         self.liquids = tmp.reverse()
+
         print()
 
     def copy(self):
         tmp = Stack()
-        result = Stack()
         while not self.liquids.isEmpty():
-            liquid: Liquid = self.removeLiquid()
-            new_liquid = liquid.copy()
-            result.push(new_liquid)
+            liquid: Liquid = self.liquids.pop()
             tmp.push(liquid)
 
-        self.liquids = tmp.reverse()
         new_tube = Tube(self.name, self.sx, self.sy, self.width,
                         self.height, self.height_per_volume, self.capacity)
-        new_tube.liquids = result.reverse()
+
+        while not tmp.isEmpty():
+            liquid: Liquid = tmp.pop()
+            new_tube.addLiquid(liquid.getColor())
+            self.liquids.push(liquid)
+
         return new_tube
+
+    def isSorted(self):
+        still_has = set(c for c in self.colors if self.colors[c] > 0)
+        return len(still_has) == 1
+
+    def getNumUnsorted(self):
+        still_has = set(c for c in self.colors if self.colors[c] > 0)
+        result = len(still_has) - 1
+        return result if result > 0 else 0
 
 
 if __name__ == "__main__":
@@ -106,10 +124,26 @@ if __name__ == "__main__":
     test_tube.addLiquid('blue')
     # test_tube.addLiquid('blue')
     test_tube.addLiquid('blue')
+    test_tube.addLiquid('red')
 
     width = 500
     height = 400
     win = GraphWin("test", width, height)
     win.setCoords(-width / 2, -height / 2, width / 2, height / 2)
     test_tube.draw(win)
+
+    print(test_tube.getNumUnsorted())
+
+    win.getMouse()
+
+    new_tube = test_tube.copy()
+    test_tube.print()
+
+    test_tube.undraw()
+    win.getMouse()
+    new_tube.removeLiquid()
+    new_tube.draw(win)
+    new_tube.print()
+    print(new_tube.getNumUnsorted())
+
     win.getMouse()

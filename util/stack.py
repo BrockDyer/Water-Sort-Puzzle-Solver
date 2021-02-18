@@ -42,3 +42,8 @@ class Stack:
         self._top = tmp._top
         self.size = tmp.size
         return self
+
+    def getTopNode(self):
+        if self.isEmpty():
+            raise IndexError("Tried to get top of empty stack")
+        return self._top

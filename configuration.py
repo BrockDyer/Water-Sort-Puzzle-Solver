@@ -87,6 +87,22 @@ class Configuration:
     def getDest(self):
         return self.dest
 
+    def heuristic(self):
+        min_moves_left = 0
+        for tube in self.tubes:
+            min_moves_left += tube.getNumUnsorted()
+        return min_moves_left
+
+    def isGoal(self):
+        solved_count = 0
+        num_tubes = 0
+        for tube in self.tubes:
+            if (tube.isSorted() and tube.isFull()) or tube.getNumLiquids() == 0:
+                solved_count += 1
+            num_tubes += 1
+
+        return solved_count == num_tubes
+
 
 if __name__ == "__main__":
     from water_sort import init, create_puzzle, show
@@ -94,12 +110,39 @@ if __name__ == "__main__":
     win = init(500, 400, "Test")
     tubes = create_puzzle()
     config = Configuration(tubes)
+    print(config.heuristic())
     config.draw(win)
     show(win)
     children = config.getChildren()
+    print(children[0].heuristic())
+    child = children[0]
+    child.getSource().undraw()
+    child.getDest().undraw()
+    child.draw(win)
     show(win)
-    selected = children[0]
-    selected.getSource().undraw()
-    selected.getDest().undraw()
-    selected.draw(win)
-    show(win)
+
+    win.close()
+
+    win = init(500, 400, "Test")
+
+    tubes = []
+    config = Configuration(tubes)
+    print(config.isGoal())
+
+    tube = Tube("1", 0, 0, 20, 60, 10, 5)
+    tubes = [tube]
+    tube.addLiquid("red")
+
+    config = Configuration(tubes)
+    print(config.isGoal())
+
+    config.draw(win)
+    win.getMouse()
+
+    while not tube.isFull():
+        tube.addLiquid("red")
+
+    tube.undraw()
+    print(config.isGoal())
+    config.draw(win)
+    win.getMouse()
