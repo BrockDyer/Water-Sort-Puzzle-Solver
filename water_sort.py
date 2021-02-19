@@ -2,7 +2,7 @@ from configuration import Configuration
 from graphics import *
 from tube import Tube
 from configuration import Configuration
-from a_star import a_star
+from a_star import a_star, calculate_heuristic
 from random import randint, shuffle
 
 
@@ -99,11 +99,20 @@ def main():
 
     display = display_text("Click to solve", win)
 
+    # print(start_config.getHeuristic())
+
     show(win)
 
     start_config.undraw()
     display = display_text("Solving...", win, display)
-    sol = a_star(start_config)
+
+    ts = time.time()
+    sol = a_star(start_config, calculate_heuristic)
+    te = time.time()
+
+    # print(sol)
+
+    print("Solution found in {}".format(te-ts))
 
     tmp = sol.pop()
     while tmp is not None:

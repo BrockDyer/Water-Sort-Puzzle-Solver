@@ -1,8 +1,13 @@
+from .stack import Stack
+
+
+DEFAULT_BUCKET_NUMBER = 25
+
 
 class BucketQueue:
 
-    def __init__(self, size=100) -> None:
-        self.buckets = [[] for x in range(size)]
+    def __init__(self, size=DEFAULT_BUCKET_NUMBER) -> None:
+        self.buckets = [Stack() for _ in range(size)]
         self.contained = {}
 
     def isEmpty(self):
@@ -10,16 +15,16 @@ class BucketQueue:
 
     def enqueue(self, priority, value):
         while priority >= len(self.buckets):
-            self.buckets.append([])
+            self.buckets.append(Stack())
 
-        self.buckets[priority].append(value)
+        self.buckets[priority].push(value)
         if value not in self.contained:
             self.contained[value] = 0
         self.contained[value] += 1
 
     def removeMin(self):
         i = 0
-        while self.buckets[i] == []:
+        while self.buckets[i].isEmpty():
             i += 1
 
         value = self.buckets[i].pop()
