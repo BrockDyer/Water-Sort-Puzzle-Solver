@@ -203,8 +203,8 @@ if __name__ == "__main__":
     # config.draw(win)
     # win.getMouse()
 
-    tubes = create_puzzle()
-    config = Configuration(tubes)
+    # tubes = create_puzzle()
+    # config = Configuration(tubes)
     # config2 = Configuration(tubes)
 
     # print("{} == {} : {}".format(config, config2, config == config2))
@@ -213,8 +213,8 @@ if __name__ == "__main__":
 
     # print("{} == {} : {}".format(config, config3, config == config3))
 
-    print(config.getHeuristic())
+    # print(config.getHeuristic())
 
-    config.draw(win)
+    # config.draw(win)
 
-    show(win)
+    # show(win)

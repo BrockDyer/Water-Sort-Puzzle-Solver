@@ -1,12 +1,9 @@
+from util.bucket_queue import BucketQueue
 from configuration import Configuration
-from util.priority_queue import PriorityQueue
+from util.bucket_queue import BucketQueue
 from configuration import Configuration
 from util.stack import Stack
 import time
-
-
-t_time = 0
-measures = 0
 
 
 def reconstruct_path(came_from: dict, current: Configuration) -> Stack:
@@ -19,7 +16,7 @@ def reconstruct_path(came_from: dict, current: Configuration) -> Stack:
 
 
 def a_star(start: Configuration) -> Stack:
-    frontier = PriorityQueue()
+    frontier = BucketQueue()
 
     came_from = {start: None}
 
@@ -29,10 +26,10 @@ def a_star(start: Configuration) -> Stack:
     f_score = {}
     f_score[start] = start.getHeuristic()
 
-    frontier.enqueue((f_score[start], start))
+    frontier.enqueue(f_score[start], start)
 
     while not frontier.isEmpty():
-        _, current = frontier.dequeue()
+        current = frontier.removeMin()
         if current.isGoal():
             return reconstruct_path(came_from, current)
 
@@ -44,13 +41,9 @@ def a_star(start: Configuration) -> Stack:
                 came_from[child] = current
                 g_score[child] = current_gscore
                 f_score[child] = g_score[child] + child.getHeuristic()
-                ts = time.time()
-                frontier.enqueue((f_score[child], child))
-                te = time.time()
-                global t_time
-                t_time += te-ts
-                global measures
-                measures += 1
+
+                if not frontier.hasValue(child):
+                    frontier.enqueue(f_score[child], child)
 
     return Stack()
 
@@ -67,8 +60,5 @@ if __name__ == "__main__":
     te = time.time()
 
     print(sol)
-
-    print("Total Measures: {} Average time: {} Total Time: {}".format(
-        measures, t_time / measures, t_time))
 
     print("Solution found in {}".format(te-ts))
