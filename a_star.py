@@ -16,7 +16,7 @@ def reconstruct_path(came_from: dict, current: Configuration) -> Stack:
 
 
 def calculate_heuristic(config: Configuration):
-    return config.getHeuristic()
+    return config.calculateHeuristic()
 
 
 def a_star(start: Configuration, h) -> Stack:
@@ -111,4 +111,4 @@ if __name__ == "__main__":
     print("Solution found in {}".format(te-ts))
 
     print("Heuristic: {} Actual: {}".format(
-        config.getHeuristic(), sol.getSize() - 1))
+        config.calculateHeuristic(), sol.getSize() - 1))

@@ -4,20 +4,16 @@ from graphics import GraphWin
 
 
 class Configuration:
-    def __init__(self, tubes, heuristic=None) -> None:
+    def __init__(self, tubes) -> None:
         self.tubes = tubes
         self.source = None
         self.dest = None
-        if heuristic:
-            self.heuristic = heuristic
-        else:
-            self.heuristic = self.calculateHeuristic()
 
     def _copy(self):
         new_tubes = []
         for tube in self.tubes:
             new_tubes.append(tube.copy())
-        return Configuration(new_tubes, self.heuristic)
+        return Configuration(new_tubes)
 
     def canPour(_, source_tube: Tube, destination_tube: Tube):
         pouring_liquid: Liquid = source_tube.getTopLiquid()
@@ -95,9 +91,6 @@ class Configuration:
                     new_config._pour(
                         new_config.tubes[tube_idx], new_config.tubes[t_idx], True)
 
-                    # We need to update the heuristic after the pour
-                    new_config.heuristic = new_config.calculateHeuristic()
-
                     children.add(new_config)
 
                     if debug:
@@ -114,9 +107,6 @@ class Configuration:
     def getDest(self):
         return self.dest
 
-    def getHeuristic(self):
-        return self.heuristic
-
     def isGoal(self):
         solved_count = 0
         num_tubes = 0
@@ -128,7 +118,7 @@ class Configuration:
         return solved_count == num_tubes
 
     def __lt__(self, other: "Configuration"):
-        return self.heuristic < other.heuristic
+        return self.calculateHeuristic() < other.calculateHeuristic()
 
     def __eq__(self, other):
         my_tubes = {}
@@ -178,11 +168,11 @@ if __name__ == "__main__":
     win = init(500, 400, "Test")
     # tubes = create_puzzle()
     # config = Configuration(tubes)
-    # print(config.heuristic())
+    # print(config.calculateHeuristic()())
     # config.draw(win)
     # show(win)
     # children = config.getChildren()
-    # print(children[0].heuristic())
+    # print(children[0].calculateHeuristic()())
     # child = children[0]
     # child.getSource().undraw()
     # child.getDest().undraw()
@@ -225,7 +215,7 @@ if __name__ == "__main__":
 
     # print("{} == {} : {}".format(config, config3, config == config3))
 
-    # print(config.getHeuristic())
+    # print(config.calculateHeuristic())
 
     # config.draw(win)
 
@@ -252,12 +242,12 @@ if __name__ == "__main__":
     print("firstHash: {} secondHash: {}".format(hash(config), hash(config2)))
 
     print("heuristic {}, {}".format(
-        config.getHeuristic(), config2.getHeuristic()))
+        config.calculateHeuristic(), config2.calculateHeuristic()))
 
     children = config.getChildren()
     print(len(children))
     best_hscore = min(children)
     print("Parent H: {} Child H: {}".format(
-        config.getHeuristic(), best_hscore.getHeuristic()))
+        config.calculateHeuristic(), best_hscore.calculateHeuristic()))
 
     # show(win)
