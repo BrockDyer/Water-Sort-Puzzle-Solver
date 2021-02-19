@@ -16,7 +16,7 @@ def reconstruct_path(came_from: dict, current: Configuration) -> Stack:
 
 
 def a_star(start: Configuration) -> Stack:
-    frontier = BucketQueue()
+    frontier = BucketQueue(100)
 
     came_from = {start: None}
 
