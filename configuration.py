@@ -68,7 +68,10 @@ class Configuration:
             # tube_heuristic = tube.getNumUnsorted()
 
             # Alternating heuristic
-            tube_heuristic = tube.getNumAlternating()
+            # tube_heuristic = tube.getNumAlternating()
+
+            # Group heuristic
+            tube_heuristic = tube.getNumGroups()
             calculated_heuristic += tube_heuristic
 
         return calculated_heuristic

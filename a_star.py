@@ -27,7 +27,7 @@ def a_star(start: Configuration, h) -> Stack:
     # h_time = 0
     # num_children = 0
 
-    # best_delta_h = 0
+    best_delta_h = 0
 
     frontier = BucketQueue()
 
@@ -54,7 +54,7 @@ def a_star(start: Configuration, h) -> Stack:
             # print("Children total time: {} Children average time: {}".format(
             #     c_time, c_time / num_children))
 
-            # print("Best delta-h: {}".format(best_delta_h))
+            print("Best delta-h: {}".format(best_delta_h))
 
             return reconstruct_path(came_from, current)
 
@@ -72,9 +72,9 @@ def a_star(start: Configuration, h) -> Stack:
                 came_from[child] = current
                 g_score[child] = current_gscore
 
-                # delta_h = h(current) - h(child)
-                # if delta_h > best_delta_h:
-                #     best_delta_h = delta_h
+                delta_h = h(current) - h(child)
+                if delta_h > best_delta_h:
+                    best_delta_h = delta_h
 
                 # ts = time.time()
                 f_score[child] = g_score[child] + h(child)
@@ -109,6 +109,3 @@ if __name__ == "__main__":
     # print(sol)
 
     print("Solution found in {}".format(te-ts))
-
-    print("Heuristic: {} Actual: {}".format(
-        config.calculateHeuristic(), sol.getSize() - 1))

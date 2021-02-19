@@ -122,6 +122,25 @@ class Tube:
         self.liquids = tmp.reverse()
         return alt
 
+    def getNumGroups(self):
+        groups = [0]
+        g_idx = 0
+        tmp = Stack()
+        prev_color = None
+        while not self.liquids.isEmpty():
+            liquid = self.liquids.pop()
+            color = liquid.getColor()
+            if not color == prev_color and prev_color is not None:
+                groups.append(0)
+                g_idx += 1
+
+            groups[g_idx] += 1
+            prev_color = color
+            tmp.push(liquid)
+
+        self.liquids = tmp.reverse()
+        return len([x for x in groups if x > 0])
+
     def __str__(self) -> str:
         tmp = Stack()
         result = ""
@@ -136,8 +155,9 @@ class Tube:
 
 if __name__ == "__main__":
     test_tube = Tube("Test", 0, 0, 20, 60, 10, 5)
-    test_tube.addLiquid('blue')
+    test_tube.addLiquid('red')
     # test_tube.addLiquid('blue')
+    test_tube.addLiquid('blue')
     test_tube.addLiquid('blue')
     test_tube.addLiquid('red')
 
@@ -145,21 +165,19 @@ if __name__ == "__main__":
     height = 400
     win = GraphWin("test", width, height)
     win.setCoords(-width / 2, -height / 2, width / 2, height / 2)
+    print("Groups: {}".format(test_tube.getNumGroups()))
     test_tube.draw(win)
 
-    print(test_tube.getNumUnsorted())
-    print("Contiguous: {}".format(test_tube.getNumContiguous()))
-
     win.getMouse()
 
-    new_tube = test_tube.copy()
-    print(test_tube)
+    # new_tube = test_tube.copy()
+    # print(test_tube)
 
-    test_tube.undraw()
-    win.getMouse()
-    new_tube.removeLiquid()
-    new_tube.draw(win)
-    print(new_tube)
-    print(new_tube.getNumUnsorted())
+    # test_tube.undraw()
+    # win.getMouse()
+    # new_tube.removeLiquid()
+    # new_tube.draw(win)
+    # print(new_tube)
+    # print(new_tube.getNumUnsorted())
 
-    win.getMouse()
+    # win.getMouse()
