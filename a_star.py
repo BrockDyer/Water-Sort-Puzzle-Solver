@@ -27,6 +27,8 @@ def a_star(start: Configuration, h) -> Stack:
     # h_time = 0
     # num_children = 0
 
+    # best_delta_h = 0
+
     frontier = BucketQueue()
 
     came_from = {start: None}
@@ -52,6 +54,8 @@ def a_star(start: Configuration, h) -> Stack:
             # print("Children total time: {} Children average time: {}".format(
             #     c_time, c_time / num_children))
 
+            # print("Best delta-h: {}".format(best_delta_h))
+
             return reconstruct_path(came_from, current)
 
         # ts = time.time()
@@ -67,6 +71,10 @@ def a_star(start: Configuration, h) -> Stack:
             if child not in g_score or current_gscore < g_score[child]:
                 came_from[child] = current
                 g_score[child] = current_gscore
+
+                # delta_h = h(current) - h(child)
+                # if delta_h > best_delta_h:
+                #     best_delta_h = delta_h
 
                 # ts = time.time()
                 f_score[child] = g_score[child] + h(child)

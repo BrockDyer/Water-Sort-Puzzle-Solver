@@ -78,7 +78,7 @@ class Configuration:
         return calculated_heuristic
 
     def getChildren(self, debug=False):
-        children = []
+        children = set()
         for i in range(len(self.tubes)):
             tube_moves = []
             tube: Tube = self.tubes[i]
@@ -98,7 +98,7 @@ class Configuration:
                     # We need to update the heuristic after the pour
                     new_config.heuristic = new_config.calculateHeuristic()
 
-                    children.append(new_config)
+                    children.add(new_config)
 
                     if debug:
                         tube_moves.append(
@@ -231,10 +231,10 @@ if __name__ == "__main__":
 
     # show(win)
 
-    tubes = create_tubes(4)
-    tubes2 = create_tubes(4)
+    tubes = create_tubes(6)
+    tubes2 = create_tubes(6)
 
-    colors = get_puzzle_colors(2)
+    colors = get_puzzle_colors(4)
     colors2 = colors[:]
 
     for tube in tubes:
@@ -255,8 +255,9 @@ if __name__ == "__main__":
         config.getHeuristic(), config2.getHeuristic()))
 
     children = config.getChildren()
-    for child in children:
-        if child.getHeuristic() >= config.getHeuristic():
-            print("{} with heuristic worse or the same as parent".format(child))
+    print(len(children))
+    best_hscore = min(children)
+    print("Parent H: {} Child H: {}".format(
+        config.getHeuristic(), best_hscore.getHeuristic()))
 
     # show(win)
